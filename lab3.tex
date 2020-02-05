@@ -20,6 +20,10 @@
 
 \usepackage{circuitikz}
 \usepackage{tikz}
+\usepackage{multirow}
+\usepackage{titlesec}
+
+\setcounter{secnumdepth}{2}
 
 \def\coord(#1){coordinate(#1)}
 \def\coord(#1){node[circle, red, draw, inner sep=1pt,pin={[red, overlay, inner sep=0.5pt, font=\tiny, pin distance=0.1cm, pin edge={red, overlay,}]45:#1}](#1){}}
@@ -31,7 +35,6 @@
 \section*{Abstract}
 In the laboratory exercise, the logical characteristics of basic gates and also measurments regarding the delay of a chain of inverters was studied. In part one, switches from the input of the previous lab exercise were connected to three different ICs for testing. These two switches acted as inputs for the gates on the ICs. Measurements were taken for a two input NAND (74LS00), OR (74LS32), and an XOR (74LS86) gate. The purpose of this was to give students experience in using an IC's circuit diagram and wiring the IC to an LED. \par 
 In the second part of this lab exercise, the time delay associated with a series of inverter gates was investigated. Five inverters were wired in a series and the delay after each inverter was probed and recorded. Measurements for each inverter delay was taken along with the period of oscillation.
-
 
 \section*{Design Methodology}
 
@@ -61,10 +64,11 @@ NAND, OR, and XOR IC were used. Because input, output, \(V_c\), and ground were 
 
 \end{circuitikz}
 
-\caption{Example wiring for IC.}
+\caption{Example wiring for IC}
+\label{fig:IC}
 \end{figure}
 
-Figure 1 depicts switches to represent the input circuit from the last labs exercise. A resistor is placed between the power supply and the switch so that when the switch is closed, there is no short circuit between the ground and voltage supply. When the switch is open, 5V is supplied to the IC therefore inputing an ON signal to the device. When the switch is closed however, the wire is connected to ground therefore putting the wire at 0V.
+Figure \ref{fig:IC} depicts switches to represent the input circuit from the last labs exercise. A resistor is placed between the power supply and the switch so that when the switch is closed, there is no short circuit between the ground and voltage supply. When the switch is open, 5V is supplied to the IC therefore inputing an ON signal to the device. When the switch is closed however, the wire is connected to ground therefore putting the wire at 0V.
 A record of the output voltage (PIN 3) from each IC on every input combination as well as the results on the output LED were taken.
 
 \subsection*{Part Two}
@@ -90,12 +94,141 @@ In part two, delay and oscillation period associated with inverters were investi
 
 \end{circuitikz}
 
-\caption{Circuit diagram for the inverter oscillator.}
+\caption{Circuit diagram for the inverter oscillator}
+\label{fig:OSC}
 \end{figure}
 
-Figure 2 shows the circuit diagram for
+Figure \ref{fig:OSC} shows the circuit diagram for the inverter oscillator. The CH1 probe was placed on the node before the first inverter. This probe acted as the reference measurement which subsequent measurements would be based off of. The CH2 probe was placed after each of the inverters and a delay measurement was taken. Both probes were grounded prior to any measurement. Each measurement needed to take in account the logical value of each probe. Because the the first probe was set in front of a rising inverter, the possible measurements were: rising to falling or rising to rising. Four measurements where taken after each inverter to find the total gate propagation. 
 
 \section*{Results and Analysis}
+
+\subsection*{Part One}
+\subsubsection{NAND gate}
+
+The first gate that was tested was the NAND 74LS00N IC. By connecting the multimeter to the output node measurements were taken. Table \ref{tab:NAND} shows the results of the mesurements taken for the NAND gate.
+
+\begin{table}[h]
+\renewcommand{\arraystretch}{1.2}
+\caption{Measurements of a two input NAND gate circuit}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Switch 1 Position & Switch 2 Position & $V_{in,1}$ (V) & $V_{in,2}$ (V) & $V_{out}$ (V) & LED (on/off)\\\hline
+
+Closed & Closed & 0 & 0 & 4.1  & ON \\\hline
+Closed & Open   & 0 & 5 & 4.1  & ON \\\hline
+Open   & Closed & 5 & 0 & 4.1  & ON \\\hline
+Open   & Open   & 5 & 5 & 0.27 & OFF \\\hline
+\multicolumn{5}{|r|}{Logical function of gate: } & NAND  \\\hline
+\multicolumn{5}{|r|}{Lab kit part number for gate: } & 74LS00N  \\\hline
+
+\end{tabular}
+\end{center}
+\label{tab:NAND}
+\end{table}
+
+Table \ref{tab:NAND} shows the input and output voltages measured in the NAND gate. The inputs are either 0V or 5V depending on the position of the switch. When the switch is closed, the input is connected to ground therefore setting the potential of the input to 0V. Conversely, when the switch is open, the potential of the input node is near 5V. It is near 5V because there is still a resistor in series before. Table 1's output voltages conform to the electrical characteristics described on the IC's data sheet. The high output voltage is described to have a minimum value of 2.7V, at 4.1V this easily meets the requirement. For the low output voltage, the data sheet describes a maximum value of 0.5V with a typical value of 0.35V. The measured voltage was 0.27V which is close to that described on the sheet. In regards to the output of the circuit, because it was a NAND gate, the only time the LED should be OFF is when both inputs are logical 1. The expected result was observed.
+
+\subsubsection{OR gate}
+The next gate that was tested was the two input OR gate. The 74LS32N chip was used to take measurements. Table \ref{tab:OR} shows the measurements taken in this section of the exercise.
+
+\begin{table}[h]
+\renewcommand{\arraystretch}{1.2}
+\caption{Measurements of a two input OR gate circuit}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Switch 1 Position & Switch 2 Position & $V_{in,1}$ (V) & $V_{in,2}$ (V) & $V_{out}$ (V) & LED (on/off)\\\hline
+
+Closed & Closed & 0 & 0 & 0.09  & OFF \\\hline
+Closed & Open   & 0 & 5 & 4.07  & ON \\\hline
+Open   & Closed & 5 & 0 & 4.07  & ON \\\hline
+Open   & Open   & 5 & 5 & 4.07 & ON \\\hline
+\multicolumn{5}{|r|}{Logical function of gate: } & OR  \\\hline
+\multicolumn{5}{|r|}{Lab kit part number for gate: } & 74LS32N  \\\hline
+
+\end{tabular}
+\end{center}
+\label{tab:OR}
+\end{table}
+
+The input circuit and resultant measurements in Table \ref{tab:OR} for this circuit are the same because nothing was changed from there. The outputs however are different because this gate conforms to a different range of values. The typical and minimum output voltages on the 74LS32 gate are 3.4V and 2.7V respectively. The measured voltage was 4.07V on all logical 1 outputs. This value is well within the limits. The logical 0 output voltage was measured to be 0.09V. With a listed maximum voltage of 0.4V, this measurement is also well within the limits. The LED is only OFF when both inputs are OFF. This is consistent with the logical function of the OR gate.
+
+\subsubsection{XOR gate}
+The XOR (74LS86) gate is meant to output a logical 1 when the two inputs are inequivalent. Table \ref{tab:XOR} shows the measurements taken for this IC.
+
+\begin{table}[h]
+\renewcommand{\arraystretch}{1.2}
+\caption{Measurements of a two input XOR gate circuit}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Switch 1 Position & Switch 2 Position & $V_{in,1}$ (V) & $V_{in,2}$ (V) & $V_{out}$ (V) & LED (on/off)\\\hline
+
+Closed & Closed & 0 & 0 & 0.151 & OFF \\\hline
+Closed & Open   & 0 & 5 & 4.1   & ON \\\hline
+Open   & Closed & 5 & 0 & 4.1   & ON \\\hline
+Open   & Open   & 5 & 5 & 0.163 & OFF \\\hline
+\multicolumn{5}{|r|}{Logical function of gate: } & XOR  \\\hline
+\multicolumn{5}{|r|}{Lab kit part number for gate: } & 74LS86AN  \\\hline
+
+\end{tabular}
+\end{center}
+\label{tab:XOR}
+\end{table}
+
+Again, inputs in Table \ref{tab:XOR} are equivilent to the other two sets of measurements. The measured low outputs were under the maximum logical 0 voltage of 0.5V. The measured high outputs of 4.1V were well above the minimum voltage for logical 1 of 2.7. The LEDs were expected to be ON when the input signals have opposite logical states. This same expected output was observed in Table \ref{tab:XOR}.
+
+\subsection*{Part Two}
+
+Four measurements were taken in Table \ref{tab:INV} corresponding to the total delay propagation from the reference point to that gate.
+
+\begin{table}[h]
+\renewcommand{\arraystretch}{1.2}
+\caption{Effect of propagation delay}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+
+74LS04 & Number of Gates & Propagation Delay \\
+(pin to pin) & of Delay & (ns)\\\hline
+
+2 to 4 (rising to falling) & 1 & 3.4\\\hline
+2 to 6 (rising to falling) & 2 & 11.7\\\hline
+2 to 12 (rising to falling) & 3 & 14.7\\\hline
+2 to 10 (rising to falling) & 4 & 18.2\\\hline
+\multicolumn{2}{|r|}{Period: } & 55.6  \\\hline
+
+\end{tabular}
+\end{center}
+\label{tab:INV}
+\end{table}
+
+
+
+\section*{Questions}
+
+\begin{enumerate}
+  \item What are these voltage values for the 74LS27
+  \begin{enumerate}
+  	\item Minimum input voltage for logic 1
+  	
+  	\textbf{2 V}
+  	
+  	\item Maximum input voltage for logic 0
+  	
+  	\textbf{0.7 V}
+  	
+  	\item Minimum output voltage for logic 1
+  	
+  	\textbf{2.7 V}
+  \end{enumerate}
+  
+  \item Define propagation delay, and discuss how it impacts the output a gate. Why is it a consideration in digital designs?
+  
+  \item 
+\end{enumerate}
+
 
 \section*{Conclusion}
 
