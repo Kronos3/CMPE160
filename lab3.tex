@@ -26,6 +26,7 @@
 \usepackage{titlesec}
 \usepackage{float}
 \usepackage{pgfplots, pgfplotstable}
+\usepackage{lmodern}
 
 \setcounter{secnumdepth}{2}
 
@@ -38,7 +39,7 @@
 
 \section*{Abstract}
 In the laboratory exercise, the logical characteristics of basic gates and measurments regarding the delay of a inverter oscillator were studied. In part one, switches from the input of the previous lab exercise were connected to three different ICs for testing. These two switches acted as inputs for the gates on the ICs. Measurements were taken for a two input NAND (74LS00), OR (74LS32), and an XOR (74LS86) gate. The purpose of this was to give students experience in using an IC's circuit diagram and wiring the IC to an LED. \par 
-In the second part of this lab exercise, the time delay associated with a series of inverter gates was investigated. Five inverters were wired in a series and the delay after each inverter was probed and recorded. Measurements for each inverter delay was taken along with the period of oscillation.
+In the second part of this lab exercise, the time delay associated with a series of inverter gates was investigated. Five inverters were wired in a series and the delay after each inverter was probed and recorded. Measurements for each inverter delay was taken along with the period of oscillation. The delay propagation over the number of gates was graphed.
 
 \section*{Design Methodology}
 
@@ -64,7 +65,9 @@ NAND, OR, and XOR IC were used. Because input, output, \(V_c\), and ground were 
    	
    	\draw (C.pin 1) to[short, -*] ++(-2.44,0) -- ++(0,1.2) to[R, bipoles/length=.8cm] ++(2,0) -- (0,2.88)  to[short, -*] ++ (0,0) (-3.7, 1.8) -- (-3.7,1.2) to[ospst] ++(0,-2.87) to[short, -*] ++(0,0);
    	
-   	\draw (C.pin 3) -- ++(-1,0) node[label={[font=\footnotesize]below:To LED}]{} to[short, -*] ++(0,0);
+   	\draw (C.pin 3) -- ++(-4,0) node[label={[font=\footnotesize]below:To LED}]{} node[label={[font=\footnotesize]left:Output measurement}]{} to[short, -*] ++(0,0);
+   	
+   	\draw (C.pin 1) ++(-2.7,0) node[label={[font=\footnotesize]left:Input measurements}]{};
 
 \end{circuitikz}
 
