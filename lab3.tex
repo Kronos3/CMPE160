@@ -25,6 +25,7 @@
 \usepackage{multirow}
 \usepackage{titlesec}
 \usepackage{float}
+\usepackage{pgfplots, pgfplotstable}
 
 \setcounter{secnumdepth}{2}
 
@@ -184,10 +185,9 @@ Open   & Open   & 5 & 5 & 0.163 & OFF \\\hline
 Again, inputs in Table \ref{tab:XOR} are equivalent to the other two sets of measurements. The measured low outputs were under the maximum logical 0 voltage of $0.5\,V$. The measured high outputs of $4.1\,V$ were well above the minimum voltage for logical 1 of $2.7\,V$. The LEDs were expected to be ON when the input signals have opposite logical states. This same expected output was observed in Table \ref{tab:XOR}.
 
 
-\pagebreak
 \subsection*{Part Two}
 
-Four different screen captures from the oscilliscope were taken on each of the nodes to show the delay propagation.
+Four different screen captures from the oscilliscope were taken on each of the nodes to show the delay propagation. Images taken from oscilliscope were inverted to make better use of colors and contrast.
 
 
 \begin{figure}[H]
@@ -244,6 +244,43 @@ The delay propagation shown in Table \ref{tab:INV} shows that rising to falling 
 
 The measured period refers to the period of oscillation in the reference probe. The total time it would take to switch the logical value on the reference node would be $19.4 + one\ inverter\ delay$. This is because the delay for four gates was $19.4\,ns$, however, there are five inverter gates. If the average gate delay of an inverter ($5\,ns$) was added to the total delay measured, the half period delay would be around $23.2\,ns$. The full period would be calculated to around $46.4\,ns$. However, the measured period was $55.8\,ns$ meaning that the final inverter had a delay of $8.4\,ns$. This number is still within the range on the datasheet of the chip.
 
+\pgfplotstableread{
+X Y
+0 0
+1 3.4
+2 11.7
+3 14.7
+4 19.4
+}\datatable
+
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={Number of gates},
+    ylabel={Propgation Delay ($ns$)},
+    xmin=0, xmax=5,
+    ymin=0, ymax=20,
+    xtick={0,1,2,3,4,5},
+    ytick={0,2.5,5,7.5,10,12.5,15,17.5,20},
+    legend pos=north west,
+    ymajorgrids=true,
+    xmajorgrids=true,
+    grid style=dashed,
+]
+
+\addplot[mark = *] plot [error bars/.cd, y dir = both, y explicit] table[x=X, y=Y] {\datatable};
+
+\end{axis}
+\end{tikzpicture}
+
+\caption{Graphed delay propagation vs number of gates used}
+\label{fig:delay}
+\end{center}
+\end{figure}
+
+Figure \ref{fig:delay} shows the delay propagation from each inverter. The odd x-values indicate a rising to falling measurement while the even numbers read a rising to rising measurement. It can clearly be seen that the rising to falling delays are shorted than the rising to rising. This can be seen in the slopes between the ploted points. The slope from even to odd numbers is far lower than that of odd to even numbers.
+
 
 \section*{Conclusion}
 
@@ -271,7 +308,6 @@ This laboratory exercise investigated the logical and electrical properies of ga
   
   Propagation delay is the total time it takes for a circuit to provide an output signal given a set of input signals. Delays are propagated through the use of multiple gates because each gate has a delay associated with it. It is important to consider this delay in digital designs because an output value should not be read until the maximum delay from any path in the circuit has elapsed.
   
-  \pagebreak
   \item Design an XOR gate using 74LS08 (2-input AND), a 74LS04 (6-inverter) and a 74LS32(2-input OR). 
 \end{enumerate}
 
