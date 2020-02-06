@@ -18,10 +18,13 @@
 \newcommand{\dateDone}{January 30th}
 \newcommand{\dateSubmitted}{February 6th}
 
+\graphicspath{{./lab3_media/}}
+
 \usepackage{circuitikz}
 \usepackage{tikz}
 \usepackage{multirow}
 \usepackage{titlesec}
+\usepackage{float}
 
 \setcounter{secnumdepth}{2}
 
@@ -33,7 +36,7 @@
 \maketitle
 
 \section*{Abstract}
-In the laboratory exercise, the logical characteristics of basic gates and also measurments regarding the delay of a chain of inverters was studied. In part one, switches from the input of the previous lab exercise were connected to three different ICs for testing. These two switches acted as inputs for the gates on the ICs. Measurements were taken for a two input NAND (74LS00), OR (74LS32), and an XOR (74LS86) gate. The purpose of this was to give students experience in using an IC's circuit diagram and wiring the IC to an LED. \par 
+In the laboratory exercise, the logical characteristics of basic gates and measurments regarding the delay of a inverter oscillator were studied. In part one, switches from the input of the previous lab exercise were connected to three different ICs for testing. These two switches acted as inputs for the gates on the ICs. Measurements were taken for a two input NAND (74LS00), OR (74LS32), and an XOR (74LS86) gate. The purpose of this was to give students experience in using an IC's circuit diagram and wiring the IC to an LED. \par 
 In the second part of this lab exercise, the time delay associated with a series of inverter gates was investigated. Five inverters were wired in a series and the delay after each inverter was probed and recorded. Measurements for each inverter delay was taken along with the period of oscillation.
 
 \section*{Design Methodology}
@@ -53,7 +56,7 @@ NAND, OR, and XOR IC were used. Because input, output, \(V_c\), and ground were 
 		external pins width=0.3,
 		external pad fraction=4 ](C){IC};
 	
-	\draw (0,4) node[vcc](VCC){\(V_{CC} = 5V\)};
+	\draw (0,4) node[vcc](VCC){\(V_{CC} = 5\,V\)};
    	\draw (C.pin 14) -- ++(0.2,0) -- ++(0,0.5) -- ++(-1.45,0)  -- (VCC){};
    	\draw (C.pin 7) -- ++ (-4,0) node[ground, rotate=-90](gnd){};
    	\draw (C.pin 2) to[short, -*] ++(-2.94,0) -- (-4.2,3.5) to[R, bipoles/length=.8cm] ++(2,0) -- (0,3.5)  to[short, -*] ++ (0,0) (-4.2,1.2) to[ospst] ++(0,-2.87) to[short, -*] ++(0,0);
@@ -68,7 +71,7 @@ NAND, OR, and XOR IC were used. Because input, output, \(V_c\), and ground were 
 \label{fig:IC}
 \end{figure}
 
-Figure \ref{fig:IC} depicts switches to represent the input circuit from the last labs exercise. A resistor is placed between the power supply and the switch so that when the switch is closed, there is no short circuit between the ground and voltage supply. When the switch is open, 5V is supplied to the IC therefore inputing an ON signal to the device. When the switch is closed however, the wire is connected to ground therefore putting the wire at 0V.
+Figure \ref{fig:IC} depicts switches to represent the input circuit from the last labs exercise. A resistor is placed between the power supply and the switch so that when the switch is closed, there is no short circuit between the ground and voltage supply. When the switch is open, $5\,V$ is supplied to the IC therefore inputing an ON signal to the device. When the switch is closed however, the wire is connected to ground therefore putting the wire at $0\,V$ relative to ground.
 A record of the output voltage (PIN 3) from each IC on every input combination as well as the results on the output LED were taken.
 
 \subsection*{Part Two}
@@ -127,7 +130,8 @@ Open   & Open   & 5 & 5 & 0.27 & OFF \\\hline
 \label{tab:NAND}
 \end{table}
 
-Table \ref{tab:NAND} shows the input and output voltages measured in the NAND gate. The inputs are either 0V or 5V depending on the position of the switch. When the switch is closed, the input is connected to ground therefore setting the potential of the input to 0V. Conversely, when the switch is open, the potential of the input node is near 5V. It is near 5V because there is still a resistor in series before. Table 1's output voltages conform to the electrical characteristics described on the IC's data sheet. The high output voltage is described to have a minimum value of 2.7V, at 4.1V this easily meets the requirement. For the low output voltage, the data sheet describes a maximum value of 0.5V with a typical value of 0.35V. The measured voltage was 0.27V which is close to that described on the sheet. In regards to the output of the circuit, because it was a NAND gate, the only time the LED should be OFF is when both inputs are logical 1. The expected result was observed.
+Table \ref{tab:NAND} shows the input and output voltages measured in the NAND gate. The inputs are either $0\,V$ or $5\,V$ depending on the position of the switch. When the switch is closed, the input is connected to ground therefore setting the potential of the input to $0\,V$. Conversely, when the switch is open, the potential of the input node is near $5\,V$. It is near $5\,V$ because there is still a resistor in series before. Table 1's output voltages conform to the electrical characteristics described on the IC's datasheet. The high output voltage is described to have a minimum value of $2.7\,V$, at $4.1\,V$ this easily meets the requirement. For the low output voltage, the datasheet describes a maximum value of $0.5\,V$ with a typical value of $0.35\,V$. The measured voltage was $0.27\,V$ which is close to that described on the sheet. In regards to the output of the circuit, because it was a NAND gate, the only time the LED should be OFF is when both inputs are logical 1. The expected result was observed.
+
 
 \subsubsection{OR gate}
 The next gate that was tested was the two input OR gate. The 74LS32N chip was used to take measurements. Table \ref{tab:OR} shows the measurements taken in this section of the exercise.
@@ -152,7 +156,7 @@ Open   & Open   & 5 & 5 & 4.07 & ON \\\hline
 \label{tab:OR}
 \end{table}
 
-The input circuit and resultant measurements in Table \ref{tab:OR} for this circuit are the same because nothing was changed from there. The outputs however are different because this gate conforms to a different range of values. The typical and minimum output voltages on the 74LS32 gate are 3.4V and 2.7V respectively. The measured voltage was 4.07V on all logical 1 outputs. This value is well within the limits. The logical 0 output voltage was measured to be 0.09V. With a listed maximum voltage of 0.4V, this measurement is also well within the limits. The LED is only OFF when both inputs are OFF. This is consistent with the logical function of the OR gate.
+The input circuit and resultant measurements in Table \ref{tab:OR} for this circuit are the same because nothing was changed from there. The outputs, however, are different because this gate conforms to a different range of values. The typical and minimum output voltages on the 74LS32 gate are $3.4\,V$ and $2.7\,V$ respectively. The measured voltage was $4.07\,V$ on all logical 1 outputs. This value is well within the limits. The logical 0 output voltage was measured to be $0.09\,V$. With a listed maximum voltage of $0.4\,V$, this measurement is also well within the limits. The LED is only OFF when both inputs are OFF. This is consistent with the logical function of the OR gate.
 
 \subsubsection{XOR gate}
 The XOR (74LS86) gate is meant to output a logical 1 when the two inputs are inequivalent. Table \ref{tab:XOR} shows the measurements taken for this IC.
@@ -177,9 +181,41 @@ Open   & Open   & 5 & 5 & 0.163 & OFF \\\hline
 \label{tab:XOR}
 \end{table}
 
-Again, inputs in Table \ref{tab:XOR} are equivilent to the other two sets of measurements. The measured low outputs were under the maximum logical 0 voltage of 0.5V. The measured high outputs of 4.1V were well above the minimum voltage for logical 1 of 2.7. The LEDs were expected to be ON when the input signals have opposite logical states. This same expected output was observed in Table \ref{tab:XOR}.
+Again, inputs in Table \ref{tab:XOR} are equivalent to the other two sets of measurements. The measured low outputs were under the maximum logical 0 voltage of $0.5\,V$. The measured high outputs of $4.1\,V$ were well above the minimum voltage for logical 1 of $2.7\,V$. The LEDs were expected to be ON when the input signals have opposite logical states. This same expected output was observed in Table \ref{tab:XOR}.
 
+
+\pagebreak
 \subsection*{Part Two}
+
+Four different screen captures from the oscilliscope were taken on each of the nodes to show the delay propagation.
+
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig1}
+\label{fig:osc-1}
+\caption{Oscilloscope measurement with one gate of delay} 
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig2}
+\label{fig:osc-2}
+\caption{Oscilloscope measurement with two gates of delay} 
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig3}
+\label{fig:osc-3}
+\caption{Oscilloscope measurement with three gates of delay} 
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig4}
+\label{fig:osc-4}
+\caption{Oscilloscope measurement with four gates of delay} 
+\end{figure}
+
+Screen captures from the oscilliscope show the voltages relative to ground on each of the nodes inbetween the gates over time. They oscillate with a period of about $55\,ns$ because the circuit consists of an odd number of inverters.\par
+
 
 Four measurements were taken in Table \ref{tab:INV} corresponding to the total delay propagation from the reference point to that gate.
 
@@ -194,9 +230,9 @@ Four measurements were taken in Table \ref{tab:INV} corresponding to the total d
 (pin to pin) & of Delay & (ns)\\\hline
 
 2 to 4 (rising to falling) & 1 & 3.4\\\hline
-2 to 6 (rising to falling) & 2 & 11.7\\\hline
+2 to 6 (rising to rising) & 2 & 11.7\\\hline
 2 to 12 (rising to falling) & 3 & 14.7\\\hline
-2 to 10 (rising to falling) & 4 & 18.2\\\hline
+2 to 10 (rising to rising) & 4 & 19.4\\\hline
 \multicolumn{2}{|r|}{Period: } & 55.6  \\\hline
 
 \end{tabular}
@@ -204,7 +240,14 @@ Four measurements were taken in Table \ref{tab:INV} corresponding to the total d
 \label{tab:INV}
 \end{table}
 
+The delay propagation shown in Table \ref{tab:INV} shows that rising to falling vs rising to rising inversions have different values associated. If the direction of inversion is ignored, the average delay for each gate is $4.55\,ns$. When taking account of the direction of inversion, the average rising to falling delay was $3.25\,ns$ whereas the rising to rising was $5.8\,ns$. The period measured was $55.8\,ns$. The square wave oscillated on the figures 3\,-6 because there was an odd number of inverters in the circuit. After the signal ran through all of the inverters the original low signal inverted itself. Therefore the first oscillator would have a different input signal. If an even number of inverters were used, the probes would display no change in potential over time.
 
+The measured period refers to the period of oscillation in the reference probe. The total time it would take to switch the logical value on the reference node would be $19.4 + one\ inverter\ delay$. This is because the delay for four gates was $19.4\,ns$, however, there are five inverter gates. If the average gate delay of an inverter ($5\,ns$) was added to the total delay measured, the half period delay would be around $23.2\,ns$. The full period would be calculated to around $46.4\,ns$. However, the measured period was $55.8\,ns$ meaning that the final inverter had a delay of $8.4\,ns$. This number is still within the range on the datasheet of the chip.
+
+
+\section*{Conclusion}
+
+This laboratory exercise investigated the logical and electrical properies of gates by testing a variety of different two-input logical gate chips. In the second part, the delay propagation and period of oscillation associated with a chain of inverter gates was investigated. A $55.8\,ns$ period of oscillation was observed for a 5-inverter chain. The purpose of this lab was to clarify how chips and their datasheets are used within circuit design. 
 
 \section*{Questions}
 
@@ -226,10 +269,71 @@ Four measurements were taken in Table \ref{tab:INV} corresponding to the total d
   
   \item Define propagation delay, and discuss how it impacts the output a gate. Why is it a consideration in digital designs?
   
-  \item 
+  Propagation delay is the total time it takes for a circuit to provide an output signal given a set of input signals. Delays are propagated through the use of multiple gates because each gate has a delay associated with it. It is important to consider this delay in digital designs because an output value should not be read until the maximum delay from any path in the circuit has elapsed.
+  
+  \pagebreak
+  \item Design an XOR gate using 74LS08 (2-input AND), a 74LS04 (6-inverter) and a 74LS32(2-input OR). 
 \end{enumerate}
 
+\begin{figure}[h]
+\centering
+\begin{circuitikz}[american, ]
+	\ctikzset{multipoles/thickness=4}
+	\ctikzset{multipoles/external pins thickness=2}	
+	
+	
+	%\draw [help lines] (-4,4) grid (4,-8);%
+	
+	\node [label={[label distance=-1.4cm,text depth=0em,rotate=-90]right:74LS08 (AND)}] at (-0.13,0) {};
+	
+	\node [label={[label distance=-1.3cm,text depth=0em,rotate=-90]right:74LS32 (OR)}] at (-0.13,-5) {};
+	
+	\node [label={[label distance=-1.5cm,text depth=0em,rotate=-90]right:74LS04 (NOT)}] at (-4.53,0) {};
+	
+	\draw (0,0) node[dipchip,
+		num pins=14,
+		external pins width=0.3,
+		external pad fraction=4 ](AND){};
+	
+	\draw (0,-5) node[dipchip,
+		num pins=14,
+		external pins width=0.3,
+		external pad fraction=4 ](OR){};
+		
+	\draw (-4.4,0) node[dipchip,
+		num pins=14,
+		external pins width=0.3,
+		external pad fraction=4 ](NOT){};
+	
+	
+	\draw (AND.pin 1) -| (-2,3.4)   node (B) [label=S2]{} to [short, *-] ++(0,0);
+	\draw (NOT.pin 13) -| (-2.5,3.4) node (A) [label=S1]{} to [short, *-] ++(0,0);
+	\draw (NOT.pin 12) -- ++(0.8,0)  |- (AND.pin 2);
+	\draw (AND.pin 3)  -- ++(-0.4,0) |- (OR.pin 1);
+	
+	\draw (-2,1.68) node (c1) {} to [short, -*] ++(0,0);
+	\draw (-2,1.68) |- (NOT.pin 11);
+	
+	\draw (NOT.pin 10) |- (AND.pin 5);
+	\draw (NOT.pin 13) ++ (0.3,0) node (c2) {} to[short, *-] ++(0,-1.5) -- ++ (1.4,0) |- (AND.pin 4);
+	
+	\draw (AND.pin 6) -- ++ (-0.7,0) |- (OR.pin 2);
+	\draw (OR.pin 3) -- ++ (-2,0) node [label=L1]{} to [short, -*] ++(0,0);
+	
+	\draw (-4.4,-3) node[ground, rotate=180](GND){};
+	\draw (NOT.pin 7) -- ++(-0.4,0) |- (GND.center);
+	\draw (OR.pin 7) -| (GND.center);
+	\draw (AND.pin 7) -- ++(-1,0) |- (GND.center) to[short, *-] ++(0,0);
+	\draw (NOT.pin 14) -- ++(0.3,0) -- ++(0,0.8) -- ++(4.5,0) node(VC){}  |- (AND.pin 14);
+	\draw (OR.pin 14) -- ++(0.4,0) |- (AND.pin 14);
+	\draw (AND.pin 14) to[short, -*] ++(0.4,0) -| ++(0.4,1) node[vcc]{$V_{CC}$};
+	
+	
 
-\section*{Conclusion}
+\end{circuitikz}
+
+\caption{Circuit for 2-input XOR}
+\label{fig:XOR_IMPL}
+\end{figure}
 
 \end{document}
