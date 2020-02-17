@@ -1,0 +1,266 @@
+% A skeleton file for producing Computer Engineering reports
+% https://kgcoe-git.rit.edu/jgm6496/KGCOEReport_template
+
+\documentclass[CMPE]{KGCOEReport}
+
+% The following should be changed to represent your personal information
+\newcommand{\classCode}{CMPE 160}  % 4 char code with number
+\newcommand{\name}{Andrei Tumbar}
+\newcommand{\LabSectionNum}{4}
+\newcommand{\LabInstructor}{Mr.\ Byers}	% The slash is to tell LaTeX that the period is between words
+												% not sentences so it spaces correctly. It won't appear in the
+												% final pdf
+\newcommand{\TAs}{Sam Myers \\ Kobe Balin \\ Georgi Thomas}
+\newcommand{\LectureSectionNum}{1}
+\newcommand{\LectureInstructor}{Mr.\ Cliver}
+\newcommand{\exerciseNumber}{5}
+\newcommand{\exerciseDescription}{Combinational Logic Circuit Design Using Karnaugh Map Simplification}
+\newcommand{\dateDone}{February 13th}
+\newcommand{\dateSubmitted}{February 20th}
+
+\graphicspath{{./lab5_media/}}
+
+\usepackage{circuitikz}
+\usepackage{tikz}
+\usepackage{multirow}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{pgfplots, pgfplotstable}
+\usepackage{lmodern}
+\usepackage{siunitx}
+\usepackage{subcaption}
+\usepackage{kmap}
+\usepackage[T1]{fontenc}
+
+\usepackage{amsmath}
+
+\ctikzset{bipoles/not port/circle width=.4}
+\ctikzset{tripoles/american and port/width=0.8}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{ <-> mathx10 }{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widebar}{\mathalpha}{mathx}{"73}
+
+\makeatletter
+\newcommand{\cwidebar}[2][0]{{\mathpalette\@cwidebar{{#1}{#2}}}}
+\newcommand{\@cwidebar}[2]{\@cwideb@r{#1}#2}
+\newcommand{\@cwideb@r}[3]{%
+  \sbox\z@{$\m@th#1\mkern-#2mu#3\mkern#2mu$}%
+  \widebar{\box\z@}%
+}
+\makeatother
+
+\begin{document}
+\maketitle
+
+\section*{Abstract}
+In this laboratory exercise, an arbitrary function was implemented using a simplified Karnaugh map. A product of sums and a sums of product expression was generated. Both circuits were designed in Quartus II and then simulated in Modelsim. A forces file was initially used to control input pins, however, the test bench provided on MyCourses proved to be a more effient way to test the circuit. The cost of each circuit was evaluated. The cheap circuit was implemented a breadboard. The function was a four-input, one-output function described using min-term notation.
+
+\section*{Design Methodology}
+
+A function provided in equation \ref{eq:func} is a min-term representation of $F$.
+
+\begin{equation}
+\label{eq:func}
+F = {\sum}_{ABCD} (0,2,3,4,6,7,13,14,15)
+\end{equation}
+
+Every number above shows in the input combinations that would result in a 1 in binary. The 4-bit input is represented by $A$, $B$, $C$, and $D$ in that order.
+
+\subsection*{Karnaugh Maps}
+
+Two Karnaugh Maps were created to implement the function using max-term and min-terms. The sum-of-products (min-terms) and product-of-sums (max-terms) expressions were found below.
+
+\begin{figure}[h!]
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\begin{Karnaugh}
+				\contingut{1,0,1,1,
+						   1,0,1,1,
+						   0,0,0,0,
+						   0,1,1,1}
+		   \implicantcostats{0}{6}{red}
+		   \implicant{3}{6}{blue}
+		   \implicant{7}{14}{green}
+		   \implicant{13}{15}{yellow}
+		\end{Karnaugh}
+		\caption{Min-terms K-Map}
+		\label{fig:sop}
+	\end{subfigure}
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\begin{Karnaugh}
+				\contingut{1,0,1,1,
+						   1,0,1,1,
+						   0,0,0,0,
+						   0,1,1,1}
+		   \implicant{8}{10}{blue}
+		   \implicant{12}{8}{red}
+		   \implicant{1}{5}{green}
+		\end{Karnaugh}
+		\caption{Max-terms K-Map}
+		\label{fig:pos}
+	\end{subfigure}
+	
+	\caption{K-Maps for both POS and SOP functions}
+	\label{fig:kmap}
+\end{figure}
+
+The groups in Figure \ref{fig:kmap} were written as a sum-of-products (SOP) and a product-of-sums (POS). Figure \ref{fig:sop} shows 4 groupings and therefore 4 terms were generated. Figure \ref{fig:pos} however, shows 3 groupings.
+
+\subsection*{Reduced Expressions}
+
+An expression can be extracted from each expression. This results in a boolean expression in POS or SOP form.
+
+\begin{equation}
+\label{eq:sop}
+F_{SOP} = \widebar{A}\widebar{D} + ABD + \widebar{A}C + BC
+\end{equation}
+
+\begin{equation}
+\label{eq:pos}
+F_{POS} = (\widebar{A} + B)(\widebar{A} + C + D)(A + C + \widebar{D})
+\end{equation}
+
+The POS and SOP expressions above can be implemented using a circuit with AOI logic.
+
+\begin{figure}[htbp]
+	\centering
+	\begin{circuitikz}[scale = 0.8, transform shape]
+	
+	\coordinate (TOP) at (0,12);
+	
+	\draw (TOP) to[short, l=A, o-] ++(1,0) to[short, -*] ++(1,0) coordinate(A);
+	\draw (TOP) ++(0,-1) to[short, l=B, o-] ++(1,0) to[short, -*] ++(2.5,0) coordinate(B);
+	\draw (TOP) ++(0,-2) to[short, l=C, o-] ++(1,0) to[short, -*] ++(4,0) coordinate(C);
+	\draw (TOP) ++(0,-3) to[short, l=D, o-] ++(1,0) to[short, -*] ++(5.5,0) coordinate(D);
+	
+	\draw (A) ++(0.5,0) node (anot) [not port, scale=.5]{};
+	%\draw (B) ++(0.5,0) node (bnot) [not port, scale=.5]{};
+	%\draw (C) ++(0.5,0) node (cnot) [not port, scale=.5]{};
+	\draw (D) ++(0.5,0) node (dnot) [not port, scale=.5]{};
+	
+	\draw (A) -- (anot.in)
+		  %(B) -- (bnot.in)
+		  %(C) -- (cnot.in)
+		  (D) -- (dnot.in);
+	
+	\draw (anot.out) |- ++(-0.4,-0.4) coordinate(!A);
+	%\draw (bnot.out) |- ++(-0.4,-0.4) coordinate(!B);
+	%\draw (cnot.out) |- ++(-0.4,-0.4) coordinate(!C);
+	\draw (dnot.out) |- ++(-0.4,-0.4) coordinate(!D);
+	
+	\coordinate (SOP_TOP) at (10,7);
+	
+	\draw (SOP_TOP)              node (sop_t1) [and port, scale=0.7]{};
+	
+	\draw (SOP_TOP) ++(0,-1.5)   node (sop_t2_1) [and port, scale=0.7]{};
+	\draw (SOP_TOP) ++(1.5,-2)   node (sop_t2_2) [and port, scale=0.7]{};
+	
+	\draw (SOP_TOP) ++(0,-3)     node (sop_t3)   [and port, scale=0.7]{};
+	
+	\draw (SOP_TOP) ++(0,-4.5)   node (sop_t4)   [and port, scale=0.7]{};
+	
+	\draw (SOP_TOP) ++(3,-0.5)     node (sop_c1) [or port, scale=0.7]{};
+	\draw (SOP_TOP) ++(4.75,-2.25) node (sop_c2) [or port, scale=0.7]{};
+	\draw (SOP_TOP) ++(1.5,-3.75)  node (sop_c3) [or port, scale=0.7]{};
+	
+	\draw (!A) |- node[circ,midway]{} (sop_t1.in 1)
+		  (!D) |- node[circ,midway]{} (sop_t1.in 2)
+		  ;
+	
+	\draw (A) |- node[circ,midway]{} (sop_t2_1.in 1)
+		  (B) |- node[circ,midway]{} (sop_t2_1.in 2)
+		  (D) |- node[circ,midway]{} (sop_t2_2.in 2)
+		  
+		  (sop_t2_1.out) -- ++(0.35, 0) |- (sop_t2_2.in 1)
+		  ;
+	
+	\draw (!A) |- node[circ,midway]{} (sop_t3.in 1)
+		  (C)  |- node[circ,midway]{} (sop_t3.in 2)
+		  ;
+		  
+	\draw (B)  |- node[circ,midway]{} (sop_t4.in 1)
+		  (C)  |- node[circ,midway]{} (sop_t4.in 2)
+		  ;
+	
+	\draw (sop_t1.out) -- ++(1.5,0) |- (sop_c1.in 1)
+		  (sop_t2_2.out) -- ++(0.25,0) |- (sop_c1.in 2);
+	
+	\draw (sop_t3.out) -- ++(0.25,0) |- (sop_c3.in 1)
+		  (sop_t4.out) -- ++(0.25,0) |- (sop_c3.in 2);
+	
+	\draw (sop_c1.out) -- ++(0.25,0) |- (sop_c2.in 1)
+		  (sop_c3.out) -- ++(1.75,0)  |- (sop_c2.in 2);
+	
+	\draw (sop_c2.out) to[short, l=$F_{SOP}$, -o] ++(1.75,0);
+	
+	
+	\coordinate (POS_TOP) at (10,-1);
+	
+	\draw (POS_TOP)              node (pos_t1) [or port, scale=0.7]{};
+	
+	\draw (POS_TOP) ++(0,-1.5)   node (pos_t2_1) [or port, scale=0.7]{};
+	\draw (POS_TOP) ++(1.5,-2)   node (pos_t2_2) [or port, scale=0.7]{};
+	
+	\draw (POS_TOP) ++(0,-3)     node (pos_t3_1) [or port, scale=0.7]{};
+	\draw (POS_TOP) ++(1.5,-3.5) node (pos_t3_2) [or port, scale=0.7]{};
+	
+	
+	\draw (POS_TOP) ++(3,-2.75)     node (pos_c1) [and port, scale=0.7]{};
+	\draw (POS_TOP) ++(4.5,-1.4)    node (pos_c2) [and port, scale=0.7]{};
+	
+	\draw (!A) |- node[circ,midway]{} (pos_t1.in 1)
+		  (B)  |- node[circ,midway]{} (pos_t1.in 2)
+		  ;
+	
+	\draw (!A) |- node[circ,midway]{} (pos_t2_1.in 1)
+		  (C)  |- node[circ,midway]{} (pos_t2_1.in 2)
+		  (D)  |- node[circ,midway]{} (pos_t2_2.in 2)
+		  
+		  (pos_t2_1.out) -- ++(0.2, 0) |- (pos_t2_2.in 1)
+		  ;
+	
+	\draw (A)  |- node[circ,midway]{} (pos_t3_1.in 1)
+		  (C)  |- node[circ,midway]{} (pos_t3_1.in 2)
+		  (!D) |- node[circ,midway]{} (pos_t3_2.in 2)
+		  
+		  (pos_t3_1.out) -- ++(0.2, 0) |- (pos_t3_2.in 1)
+		  ;
+	
+	\draw (pos_t2_2.out) -- ++(0.25, 0) |- (pos_c1.in 1)
+		  (pos_t3_2.out) -- ++(0.25, 0) |- (pos_c1.in 2)
+		  ;
+	
+	\draw (pos_t1.out) -- ++(3.35,0) |- (pos_c2.in 1)
+		  (pos_c1.out) -- ++(0.4,0)  |- (pos_c2.in 2)
+		  ;
+	
+	\draw (pos_c2.out) to[short, l=$F_{POS}$, -o] ++(2,0);
+	
+	\end{circuitikz}
+	\caption{Circuit diagram for $F_{SOP}$ and $F_{POS}$}
+	\label{fig:cir}
+\end{figure}
+
+Figure \ref{fig:cir} is a circuit diagram for both the POS and SOP implementations of $F$. It displays the pin numbers to the chips in the format \texttt{CHIP\char`_PIN}. Both input and output pins are shown on either side of every node.
+
+\section*{Results and Analysis}
+
+THe hardware was contructed and tested using 3 chips. An AND, OR, and INVERT chip was needed to implement the circuit shown in Figure \ref{fig:cir}. The DC power supply was configured to produce a $5\,\si\volt$ source and a maximum of $0.1\,\si\ampere$. The first three switch were configured as inputs and four of the LED were wired as outputs. All of the input combinations of the input switches matched the output combinations on the LEDs as in Table \ref{tab:TRUTH}.
+
+\section*{Conclusion}
+
+This exercise implemented a 3-input, 4-output function, F, first using boolean algebra and then translated to a circuit. The circuit was tested in ModelSim to verify the correct combination of gates were used. Finally the circuit was implemented on a breadboard and was tested using the input switches and the LEDs as output. The purpose of this exercise was to design a circuit completely from the definition to the hardware implementation.
+
+\section*{Questions}
+
+\begin{enumerate}
+  \item A total of 6 two-input gates were used in this circuit design. This was made possible by using DeMorgan's Law to further simplify $X$ and therefore use one of the gate outputs of $W$. A total of four 2-input AND gates and two 2-input OR gates were used.
+
+  \item A total of 3 ICs were used. Every 2-input, 1 output IC holds four gates. Because the OR and AND gate counts did not exceed 4, one chip could be used for each. In the case of the inverter, a 1-input, 1-output gate, a total of 6 inverter gates are inside the chip. Only one inverter was needed in order to implement the circuit. Therefore, 1x 74LS08 2-input AND gate, 1x 74LS32 2-input OR gate, and 1x 74LS04 1-input inverter chips were used.
+\end{enumerate}
+
+\end{document}
