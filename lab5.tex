@@ -29,6 +29,7 @@
 \usepackage{lmodern}
 \usepackage{siunitx}
 \usepackage{subcaption}
+
 \usepackage{kmap}
 \usepackage[T1]{fontenc}
 
@@ -56,7 +57,7 @@
 \maketitle
 
 \section*{Abstract}
-In this laboratory exercise, an arbitrary function was implemented using a simplified Karnaugh map. A product of sums and a sums of product expression was generated. Both circuits were designed in Quartus II and then simulated in Modelsim. A forces file was initially used to control input pins, however, the test bench provided on MyCourses proved to be a more effient way to test the circuit. The cost of each circuit was evaluated. The cheap circuit was implemented a breadboard. The function was a four-input, one-output function described using min-term notation.
+In this laboratory exercise, an arbitrary function was implemented using a simplified Karnaugh map. A product of sums and a sums of product expression was generated. Both circuits were designed in Quartus II and then simulated in Modelsim. A forces file was initially used to control input pins, however, the test bench provided on MyCourses proved to be a more effient way to test the circuit. The cost of each circuit was evaluated. The cheap circuit was implemented a breadboard. The function was a four-input, one-output function described using min-term notation. The exercise was successful when implementing the circuit on a breadboard as well in the Modelsim simulation.
 
 \section*{Design Methodology}
 
@@ -124,7 +125,7 @@ F_{SOP} = \widebar{A}\widebar{D} + ABD + \widebar{A}C + BC
 F_{POS} = (\widebar{A} + B)(\widebar{A} + C + D)(A + C + \widebar{D})
 \end{equation}
 
-The POS and SOP expressions above can be implemented using a circuit with AOI logic.
+The SOP (Eq. \ref{eq:sop}) and POS (Eq. \ref{eq:pos}) expressions above can be implemented using a circuit with AOI logic.
 
 \begin{figure}[htbp]
 	\centering
@@ -165,7 +166,7 @@ The POS and SOP expressions above can be implemented using a circuit with AOI lo
 	
 	\draw (SOP_TOP) ++(3,-0.5)     node (sop_c1) [or port, scale=0.7]{};
 	\draw (SOP_TOP) ++(4.75,-2.25) node (sop_c2) [or port, scale=0.7]{};
-	\draw (SOP_TOP) ++(1.5,-3.75)  node (sop_c3) [or port, scale=0.7]{};
+	\draw (SOP_TOP) ++(2,-3.75)  node (sop_c3) [or port, scale=0.7]{};
 	
 	\draw (!A) |- node[circ,midway]{} (sop_t1.in 1)
 		  (!D) |- node[circ,midway]{} (sop_t1.in 2)
@@ -193,23 +194,23 @@ The POS and SOP expressions above can be implemented using a circuit with AOI lo
 		  (sop_t4.out) -- ++(0.25,0) |- (sop_c3.in 2);
 	
 	\draw (sop_c1.out) -- ++(0.25,0) |- (sop_c2.in 1)
-		  (sop_c3.out) -- ++(1.75,0)  |- (sop_c2.in 2);
+		  (sop_c3.out) -- ++(1.25,0)  |- (sop_c2.in 2);
 	
 	\draw (sop_c2.out) to[short, l=$F_{SOP}$, -o] ++(1.75,0);
 	
 	
 	\coordinate (POS_TOP) at (10,-1);
 	
-	\draw (POS_TOP)              node (pos_t1) [or port, scale=0.7]{};
+	\draw (POS_TOP)            node (pos_t1)   [or port, scale=0.7]{};
 	
-	\draw (POS_TOP) ++(0,-1.5)   node (pos_t2_1) [or port, scale=0.7]{};
-	\draw (POS_TOP) ++(1.5,-2)   node (pos_t2_2) [or port, scale=0.7]{};
+	\draw (POS_TOP) ++(0,-1.5) node (pos_t2_1) [or port, scale=0.7]{};
+	\draw (POS_TOP) ++(2,-2)   node (pos_t2_2) [or port, scale=0.7]{};
 	
-	\draw (POS_TOP) ++(0,-3)     node (pos_t3_1) [or port, scale=0.7]{};
-	\draw (POS_TOP) ++(1.5,-3.5) node (pos_t3_2) [or port, scale=0.7]{};
+	\draw (POS_TOP) ++(0,-3)   node (pos_t3_1) [or port, scale=0.7]{};
+	\draw (POS_TOP) ++(2,-3.5) node (pos_t3_2) [or port, scale=0.7]{};
 	
 	
-	\draw (POS_TOP) ++(3,-2.75)     node (pos_c1) [and port, scale=0.7]{};
+	\draw (POS_TOP) ++(3.5,-2.75)   node (pos_c1) [and port, scale=0.7]{};
 	\draw (POS_TOP) ++(4.5,-1.4)    node (pos_c2) [and port, scale=0.7]{};
 	
 	\draw (!A) |- node[circ,midway]{} (pos_t1.in 1)
@@ -235,32 +236,131 @@ The POS and SOP expressions above can be implemented using a circuit with AOI lo
 		  ;
 	
 	\draw (pos_t1.out) -- ++(3.35,0) |- (pos_c2.in 1)
-		  (pos_c1.out) -- ++(0.4,0)  |- (pos_c2.in 2)
+		  (pos_c1.out) -- ++(0.1,0)  |- (pos_c2.in 2)
 		  ;
 	
 	\draw (pos_c2.out) to[short, l=$F_{POS}$, -o] ++(2,0);
+	
+	\draw (anot.in) ++(-0.15,0) node[label={[font=\footnotesize]above:\texttt{1}}] {}
+		  (anot.out) node[label={[font=\footnotesize]above:\texttt{2}}] {}
+		  
+		  (dnot.in) ++(-0.15,0) node[label={[font=\footnotesize]above:\texttt{3}}] {}
+		  (dnot.out) node[label={[font=\footnotesize]above:\texttt{4}}] {}
+		  ;
+	
+	\draw (sop_t1.in 1) ++(-0.25,-0.15) node[label={[font=\footnotesize]above:\texttt{2\_1}}] {}
+		  (sop_t1.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{2\_2}}] {}
+		  (sop_t1.out)  ++(0.25,0.15)  node[label={[font=\footnotesize]below:\texttt{2\_3}}] {}
+		  
+		  (sop_t2_1.in 1) ++(-0.25,-0.15) node[label={[font=\footnotesize]above:\texttt{1\_1}}] {}
+		  (sop_t2_1.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{1\_2}}] {}
+		  (sop_t2_1.out)  ++(0.25,-0.15)  node[label={[font=\footnotesize]above:\texttt{1\_3}}] {}
+		  
+		  (sop_t2_2.in 1) ++(-0.25,-0.15) node[label={[font=\footnotesize]above:\texttt{1\_4}}] {}
+		  (sop_t2_2.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{1\_5}}] {}
+		  (sop_t2_2.out)  ++(0.25,0.15)  node[label={[font=\footnotesize]below:\texttt{1\_6}}] {}
+		  
+		  (sop_t3.in 1) ++(-0.25,-0.15) node[label={[font=\footnotesize]above:\texttt{1\_13}}] {}
+		  (sop_t3.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{1\_12}}] {}
+		  (sop_t3.out)  ++(0.25,-0.25)  node[label={[font=\footnotesize]above:\texttt{1\_11}}] {}
+		  
+		  (sop_t4.in 1) ++(-0.25,-0.15) node[label={[font=\footnotesize]above:\texttt{1\_10}}] {}
+		  (sop_t4.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{1\_9}}] {}
+		  (sop_t4.out)  ++(0.25,0.15)  node[label={[font=\footnotesize]below:\texttt{1\_8}}] {}
+		  ;
+	
+	\draw (sop_c1.in 1) ++(0,-0.15) node[label={[font=\footnotesize]above:\texttt{1}}] {}
+		  (sop_c1.in 2) ++(0,0.15) node[label={[font=\footnotesize]below:\texttt{2}}] {}
+		  (sop_c1.out)  ++(0.1,-0.15)  node[label={[font=\footnotesize]above:\texttt{3}}] {}
+		  
+		  (sop_c2.in 1) ++(0,-0.15) node[label={[font=\footnotesize]above:\texttt{4}}] {}
+		  (sop_c2.in 2) ++(0,0.15) node[label={[font=\footnotesize]below:\texttt{5}}] {}
+		  (sop_c2.out)  ++(0.1,-0.15)  node[label={[font=\footnotesize]above:\texttt{6}}] {}
+		  
+		  (sop_c3.in 1) ++(0,-0.15) node[label={[font=\footnotesize]above:\texttt{13}}] {}
+		  (sop_c3.in 2) ++(0,0.15) node[label={[font=\footnotesize]below:\texttt{12}}] {}
+		  (sop_c3.out)  ++(0.1,-0.15)  node[label={[font=\footnotesize]above:\texttt{11}}] {}
+		  ;
+	
+	
+	
+	\draw (pos_t1.in 1) ++(-0.25,-0.15) node[label={[font=\footnotesize]above:\texttt{2\_1}}] {}
+		  (pos_t1.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{2\_2}}] {}
+		  (pos_t1.out)  ++(0.25,0.15)  node[label={[font=\footnotesize]below:\texttt{2\_3}}] {}
+		  
+		  (pos_t2_1.in 1) ++(-0.25,-0.15) node[label={[font=\footnotesize]above:\texttt{1\_1}}] {}
+		  (pos_t2_1.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{1\_2}}] {}
+		  (pos_t2_1.out)  ++(0.25,-0.15)  node[label={[font=\footnotesize]above:\texttt{1\_3}}] {}
+		  
+		  (pos_t2_2.in 1) ++(-0.25,-0.15) node[label={[font=\footnotesize]above:\texttt{1\_4}}] {}
+		  (pos_t2_2.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{1\_5}}] {}
+		  (pos_t2_2.out)  ++(0.25,-0.15)  node[label={[font=\footnotesize]above:\texttt{1\_6}}] {}
+		  
+		  (pos_t3_1.in 1) ++(-0.25,-0.15) node[label={[font=\footnotesize]above:\texttt{1\_13}}] {}
+		  (pos_t3_1.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{1\_12}}] {}
+		  (pos_t3_1.out)  ++(0.25,-0.25)  node[label={[font=\footnotesize]above:\texttt{1\_11}}] {}
+		  
+		  (pos_t3_2.in 1) ++(-0.25,-0.25) node[label={[font=\footnotesize]above:\texttt{1\_10}}] {}
+		  (pos_t3_2.in 2) ++(-0.25,0.15) node[label={[font=\footnotesize]below:\texttt{1\_9}}] {}
+		  (pos_t3_2.out)  ++(0.25,0.15)  node[label={[font=\footnotesize]below:\texttt{1\_8}}] {}
+		  ;
+	
+	\draw (pos_c1.in 1) ++(-0.1,-0.15) node[label={[font=\footnotesize]above:\texttt{1}}] {}
+		  (pos_c1.in 2) ++(-0.1,0.15) node[label={[font=\footnotesize]below:\texttt{2}}] {}
+		  (pos_c1.out)  ++(-0.1,0)  node[label={[font=\footnotesize]right:\texttt{3}}] {}
+		  
+		  (pos_c2.in 1) ++(0,-0.15) node[label={[font=\footnotesize]above:\texttt{4}}] {}
+		  (pos_c2.in 2) node[label={[font=\footnotesize]left:\texttt{5}}] {}
+		  (pos_c2.out)  ++(0.1,-0.15)  node[label={[font=\footnotesize]above:\texttt{6}}] {}
+		  ;
+	
 	
 	\end{circuitikz}
 	\caption{Circuit diagram for $F_{SOP}$ and $F_{POS}$}
 	\label{fig:cir}
 \end{figure}
 
-Figure \ref{fig:cir} is a circuit diagram for both the POS and SOP implementations of $F$. It displays the pin numbers to the chips in the format \texttt{CHIP\char`_PIN}. Both input and output pins are shown on either side of every node.
+Figure \ref{fig:cir} is a circuit diagram for both the POS and SOP implementations of $F$. It displays the pin numbers to the chips in the format \texttt{CHIP\char`_PIN}. Both input and output pins are shown on either side of every node. When only one chip of that type is used in the function, a chip number is not included. For example, only one \texttt{AND} chip is needed and therefore the labels just display the pin number on the single chip.
 
 \section*{Results and Analysis}
 
-THe hardware was contructed and tested using 3 chips. An AND, OR, and INVERT chip was needed to implement the circuit shown in Figure \ref{fig:cir}. The DC power supply was configured to produce a $5\,\si\volt$ source and a maximum of $0.1\,\si\ampere$. The first three switch were configured as inputs and four of the LED were wired as outputs. All of the input combinations of the input switches matched the output combinations on the LEDs as in Table \ref{tab:TRUTH}.
+The Quartus II design was tested using the VHDL test bench as signal inputs. A wave form for the POS and SOP functions was generated.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{lab5_procedure}
+	\caption{Circuit simulation using the test bench}
+	\label{fig:simulation}
+\end{figure}
+
+Figure \ref{fig:simulation} shows all of the input combinations of the 4-input function function. The two outputs generate the same waveform because they are different implementations of the same function.
 
 \section*{Conclusion}
 
-This exercise implemented a 3-input, 4-output function, F, first using boolean algebra and then translated to a circuit. The circuit was tested in ModelSim to verify the correct combination of gates were used. Finally the circuit was implemented on a breadboard and was tested using the input switches and the LEDs as output. The purpose of this exercise was to design a circuit completely from the definition to the hardware implementation.
+The purpose of this exercise was to analyze the efficiency of min-term (SOP) and max-term (POS) function implementation. An arbitrary function was provided. Two Karnaugh maps were generated and used to extract the SOP and POS expressions. These expressions were then implemented in a circuit in Quartus II and simulated in Modelsim. The cheaper circuit was then constructed on a breadboard. This experiment was successul in obtaining the correct output set as provided by the function from the breadboard and the simulation.
+
+\pagebreak
 
 \section*{Questions}
 
 \begin{enumerate}
-  \item A total of 6 two-input gates were used in this circuit design. This was made possible by using DeMorgan's Law to further simplify $X$ and therefore use one of the gate outputs of $W$. A total of four 2-input AND gates and two 2-input OR gates were used.
+  \item Design a two level NAND-NAND implementation of $F_{SOP}$.
+  
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[height=7.5cm]{nand-nand}
+	\caption{Two level NAND-NAND implementation of $F_{SOP}$}
+	\label{fig:nand-nand}
+\end{figure}
 
-  \item A total of 3 ICs were used. Every 2-input, 1 output IC holds four gates. Because the OR and AND gate counts did not exceed 4, one chip could be used for each. In the case of the inverter, a 1-input, 1-output gate, a total of 6 inverter gates are inside the chip. Only one inverter was needed in order to implement the circuit. Therefore, 1x 74LS08 2-input AND gate, 1x 74LS32 2-input OR gate, and 1x 74LS04 1-input inverter chips were used.
+  \item Design a two level NOR-NOR implementation of $F_{POS}$.
+  
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[height=7.5cm]{nor-nor}
+	\caption{Two level NOR-NOR implementation of $F_{POS}$}
+	\label{fig:nor-nor}
+\end{figure}
 \end{enumerate}
 
 \end{document}
