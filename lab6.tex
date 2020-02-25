@@ -282,8 +282,15 @@ This exercise was implemented a full adder using simple logic gates. Then a 4-bi
 
 Figure \ref{fig:ripple} shows two full adders chained together by feeding the $C_{out}$ of the first into the $C_{in}$ of the second. The $C_{in}$ of the LSB is connected to ground or 0 because there is no previous bit to carry from.
 
-  \item Design a two level NOR-NOR implementation of $F_{POS}$.
-  
+  \item Overflow can be detected in an adder by analysing the signs of the inputs and output. If the signs of the inputs are opposite, there is no chance for overflow because the output is closer to zero relative to the inputs. An overflow occurs when the signs of the inputs are different from that of the output. For example in a 3-bit binary number, $1 + 7 = -8$. The inputs are both positive however the output is negative therefore an overflow occured. A boolean expression can be used to define this behavior. Given $A_N$ and $B_N$ being the N\textsuperscript{th} bit in an N-bit binary number as inputs and $F_N$ the N\textsuperscript{th} bit in the output, the following expression can be derived to define $F_{overflow}$.
+
+\begin{equation}
+\label{eq:overflow}
+F_{overflow} = (AB + \widebar{A_N}\widebar{B_N}) \cdot (A_N \oplus F) = \lbar{A_N \oplus B_N} \cdot (A_N \oplus F_N)
+\end{equation} 
+
+
+
 \begin{figure}[htbp]
 	\centering
 	%\includegraphics[height=7.5cm]{nor-nor}
