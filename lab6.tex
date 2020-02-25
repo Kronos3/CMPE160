@@ -44,7 +44,8 @@
 }}
 
 \ctikzset{bipoles/not port/circle width=.4}
-\ctikzset{tripoles/american and port/width=0.8}
+\ctikzset{tripoles/american xor port/height/.initial=.4}
+\ctikzset{tripoles/american xor port/width/.initial=.6}
 
 \DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
 \DeclareFontShape{U}{mathx}{m}{n}{ <-> mathx10 }{}
@@ -130,7 +131,7 @@ All of the min-terms in the Figure \ref{fig:sum} were written as a boolean expre
     &= \widebar{B}(A \oplus C) + B(\lbar{\cwidebar{AC} \cdot \cwidebar{\widebar{A}\widebar{C}}}) && \text{De-Morgan's Law}\\
     &= \widebar{B}(A \oplus C) + B(\lbar{(\widebar{A} + \widebar{C}) \cdot (A + C)}) && \text{De-Morgan's Law}\\
     &= \widebar{B}(A \oplus C) + B(\lbar{\widebar{A}A + \widebar{A}C + A\widebar{C} + \widebar{C}C}) && \text{Distributive property}\\
-    &= \widebar{B}(A \oplus C) + B(\lbar{\widebar{A}C + A\widebar{C}}) && \text{Compliment Law}\\
+    &= \widebar{B}(A \oplus C) + B(\lbar{\widebar{A}C + A\widebar{C}}) && \text{Complement Law}\\
     &= \widebar{B}(A \oplus C) + B(\lbar{A \oplus C}) && \text{Distributive property}\\
     &= B \oplus (A \oplus C) && \text{Definition of XOR} \\
     &= B \oplus A \oplus C && \text{Associative property} \\
@@ -229,8 +230,6 @@ This exercise was implemented a full adder using simple logic gates. Then a 4-bi
 \begin{enumerate}
   \item The simplest way to combine two full adders is to wire the $C_{out}$ of the LSB to the $C_{in}$ of the MSB.
   
-  
-  
 \begin{figure}[htbp]
 	\begin{center}
 		\begin{circuitikz}
@@ -289,14 +288,127 @@ Figure \ref{fig:ripple} shows two full adders chained together by feeding the $C
 F_{overflow} = (AB + \widebar{A_N}\widebar{B_N}) \cdot (A_N \oplus F) = \lbar{A_N \oplus B_N} \cdot (A_N \oplus F_N)
 \end{equation} 
 
+Equation \ref{eq:overflow} shows two implementations using a XNOR gate and an XOR gate or and XOR gate and the constituants of the XNOR. The first compontent checks if the signs of the inputs are the same, the second portion checks if that sign is different from the sign of the output. If both of those conditions meet, an overflow occured.
 
+  \item The circuit from Part 2 produces incorrect answers in some of the test cases because an overflow occured. Because the number is 2's comparison, the first bit acts as the sign and therefore a number may not exceed over 7 or under -8. When a sum of two numbers goes beyond the range described, the number will loop around to the other extreme.
+  
+  \item If the result was extended to use a fifth bit, the answer would not be completely correct. The carry out of the four-bit adder needs to be added to the fifth bit of the augend and addend. However if the sign of the two operands are same, the result of the carry out bit can be used. To fix this, if the signs of the operands are different, the value of the fifth bit is the inverse of the carry out. If the operands are the same, the carry out may be used as the fifth bit. This can be defined using the following expression.
+
+\begin{equation}
+F_{N+1} = (A_N \oplus B_N) \oplus C_N
+\end{equation}
+
+If the sign of $A$ and $B$ are different the first XOR gate will be 1. If this output is 1, the second XOR gate will act as an inverter. If they are equal, the second XOR will act as a wire.
+  
+  \item Design a 4-bit adder/subtractor so that the overall circuit will produce a 5-bit result that is always correct in the case of overflow.
 
 \begin{figure}[htbp]
-	\centering
-	%\includegraphics[height=7.5cm]{nor-nor}
-	\caption{Two level NOR-NOR implementation of $F_{POS}$}
-	\label{fig:nor-nor}
+	\begin{center}
+		\begin{circuitikz}
+		
+		\coordinate (SS) at (-2,-3);
+		\draw (SS) ++(0,3) coordinate (AS);
+		\coordinate (BS) at (SS);
+		
+		\draw (AS) ++(0,0)   coordinate(A3) node [left, font=\tiny]{A3};
+		\draw (AS) ++(0,0.5) coordinate(A2) node [left, font=\tiny]{A2};
+		\draw (AS) ++(0,1)   coordinate(A1) node [left, font=\tiny]{A1};
+		\draw (AS) ++(0,1.5) coordinate(A0) node [left, font=\tiny]{A0};
+		
+		\draw (BS) ++(0,0)    coordinate(B3) node [left, font=\tiny]{B3};
+		\draw (BS) ++(0,0.75) coordinate(B2) node [left, font=\tiny]{B2};
+		\draw (BS) ++(0,1.5)  coordinate(B1) node [left, font=\tiny]{B1};
+		\draw (BS) ++(0,2.25) coordinate(B0) node [left, font=\tiny]{B0};
+		
+		\draw (SS) ++(0,-1) coordinate(CIN) node [left, font=\tiny]{Control};
+		
+		\draw (A0) ++(4,-.20) node[dipchip,
+			num pins=20,
+			hide numbers, no topmark, external pins width=0.0, anchor=pin 3](ADD){}
+			
+			(ADD.center)
+			
+			node[label, rotate=-90]{74LS83}
+			;
+	
+		\node [right, font=\tiny] at (ADD.bpin 1) {C0} ;
+		\node [right, font=\tiny] at (ADD.bpin 3) {A0};
+		\node [right, font=\tiny] at (ADD.bpin 4) {B0};
+		\node [right, font=\tiny] at (ADD.bpin 5) {A1};
+		\node [right, font=\tiny] at (ADD.bpin 6) {B1};
+		\node [right, font=\tiny] at (ADD.bpin 7) {A2};
+		\node [right, font=\tiny] at (ADD.bpin 8) {B2};
+		\node [right, font=\tiny] at (ADD.bpin 9) {A3};
+		\node [right, font=\tiny] at (ADD.bpin 10) {B3};
+		
+		\coordinate (IC0) at (ADD.pin 1);
+		\coordinate (IA0) at (ADD.pin 3);
+		\coordinate (IB0) at (ADD.pin 4);
+		\coordinate (IA1) at (ADD.pin 5);
+		\coordinate (IB1) at (ADD.pin 6);
+		\coordinate (IA2) at (ADD.pin 7);
+		\coordinate (IB2) at (ADD.pin 8);
+		\coordinate (IA3) at (ADD.pin 9);
+		\coordinate (IB3) at (ADD.pin 10);
+		
+		\node [left, font=\tiny]  at (ADD.bpin 13) {C3};
+		\node [left, font=\tiny]  at (ADD.bpin 15) {S3};
+		\node [left, font=\tiny]  at (ADD.bpin 16) {S2};
+		\node [left, font=\tiny]  at (ADD.bpin 17) {S1};
+		\node [left, font=\tiny]  at (ADD.bpin 18) {S0};
+		
+		\coordinate (OC3) at (ADD.pin 13);
+		\coordinate (OS0) at (ADD.pin 18);
+		\coordinate (OS1) at (ADD.pin 17);
+		\coordinate (OS2) at (ADD.pin 16);
+		\coordinate (OS3) at (ADD.pin 15);
+		
+		\draw (B0) ++(0.5,0) node[xor port, anchor=in 1] (xor0) {};
+		\draw (B1) ++(0.5,0) node[xor port, anchor=in 1] (xor1) {};
+		\draw (B2) ++(0.5,0) node[xor port, anchor=in 1] (xor2) {};
+		\draw (B3) ++(0.5,0) node[xor port, anchor=in 1] (xor3) {};
+		
+		\draw (B0) -- (xor0.in 1)
+			  (B1) -- (xor1.in 1)
+			  (B2) -- (xor2.in 1)
+			  (B3) -- (xor3.in 1)
+		;
+		
+		\draw (xor3.in 2) to [short, -*] ++(-.125,0) coordinate(c3) |- (CIN);
+		\draw (xor2.in 2) to [short, -*] ++(-.125,0) coordinate(c2) |- (c3);
+		\draw (xor1.in 2) to [short, -*] ++(-.125,0) coordinate(c1) |- (c2);
+		\draw (xor0.in 2) to [short, -*] ++(-.125,0) coordinate(c0) |- (c1);
+		\draw (c0) |- (IC0);
+		
+		\draw (A3) -| ([xshift=-6mm]IA3) coordinate(a3c) to[short, *-] (IA3);
+		\draw (A2) -| ([xshift=-4mm]IA2) -- (IA2);
+		\draw (A1) -| ([xshift=-2mm]IA1) -- (IA1);
+		\draw (A0) -| ([xshift=-1mm]IA0) -- (IA0);
+		
+		\draw (xor0.out) -- ++(0.25,0) |- (IB0);
+		\draw (xor1.out) -- ++(0.5, 0) |- (IB1);
+		\draw (xor2.out) -- ++(0.75,0) |- (IB2);
+		\draw (xor3.out) to[short,-*] ++(1,0) coordinate(b3c) (b3c) |- (IB3);
+		
+		\draw (IB3) ++(1.25,-1) node[xor port] (xor_o1){};
+		\draw (b3c) |- (xor_o1.in 2);
+		\draw (a3c) |- (xor_o1.in 1);
+		
+		\draw (OS0) -- ++(1,0) node[right, font=\tiny]{F0};
+		\draw (OS1) -- ++(1,0) node[right, font=\tiny]{F1};
+		\draw (OS2) -- ++(1,0) node[right, font=\tiny]{F2};
+		\draw (OS3) -- ++(1,0) node[right, font=\tiny]{F3};
+		
+		\draw (OC3) -- ++(0.25,0) node[xor port, anchor=in 1](xor_o2){};
+		\draw (xor_o1.out) -| ([xshift=-1mm]xor_o2.in 2) -- (xor_o2.in 2);
+		\draw (xor_o2.out) -- ++(0.25,0) node[right, font=\tiny]{F4};
+		
+		\end{circuitikz}
+	\end{center}
+	\caption{4-bit adder/subtractor with 5-bit output.}
+	\label{fig:overflow_adder}
 \end{figure}
+
 \end{enumerate}
 
 \end{document}
