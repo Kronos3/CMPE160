@@ -1,0 +1,34 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} VHDL code for Question 1}
+
+\PYG{k}{library} \PYG{n+nn}{IEEE}\PYG{p}{;}
+\PYG{k}{use} \PYG{n+nn}{IEEE.STD\PYGZus{}LOGIC\PYGZus{}1164.}\PYG{k}{all}\PYG{p}{;}
+
+\PYG{k}{entity} \PYG{n+nc}{Q1} \PYG{k}{is}
+\PYG{k}{port} \PYG{p}{(}
+  \PYG{n}{A}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{D}\PYG{p}{,} \PYG{n}{E}\PYG{p}{,} \PYG{n}{F}\PYG{o}{:} \PYG{k}{in} \PYG{k+kt}{STD\PYGZus{}LOGIC}\PYG{p}{;}
+  \PYG{n}{L} \PYG{o}{:} \PYG{k}{out} \PYG{k+kt}{STD\PYGZus{}LOGIC}
+\PYG{p}{);}
+\PYG{k}{end} \PYG{n+nc}{Q1}\PYG{p}{;}
+
+\PYG{k}{architecture} \PYG{n+nc}{V1} \PYG{k}{of} \PYG{n+nc}{Q1} \PYG{k}{is}
+	\PYG{k}{signal} \PYG{n}{B}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{H}\PYG{p}{,} \PYG{n}{I}\PYG{p}{,} \PYG{n}{J}\PYG{p}{,} \PYG{n}{K}\PYG{o}{:} \PYG{k+kt}{STD\PYGZus{}LOGIC}\PYG{p}{;}
+\PYG{k}{begin}
+  \PYG{n}{B} \PYG{o}{\PYGZlt{}=} \PYG{k}{NOT} \PYG{n}{A}\PYG{p}{;}
+  \PYG{n}{H} \PYG{o}{\PYGZlt{}=} \PYG{n}{B} \PYG{k}{AND} \PYG{n}{C} \PYG{k}{AND} \PYG{n}{D}\PYG{p}{;}
+
+  \PYG{n}{G} \PYG{o}{\PYGZlt{}=} \PYG{k}{NOT} \PYG{n}{F}\PYG{p}{;}
+  \PYG{n}{I} \PYG{o}{\PYGZlt{}=} \PYG{n}{E} \PYG{k}{OR} \PYG{n}{G}\PYG{p}{;}
+  \PYG{n}{J} \PYG{o}{\PYGZlt{}=} \PYG{k}{NOT} \PYG{n}{I}\PYG{p}{;}
+
+  \PYG{n}{K} \PYG{o}{\PYGZlt{}=} \PYG{n}{H} \PYG{k}{XOR} \PYG{n}{J}\PYG{p}{;}
+  \PYG{n}{L} \PYG{o}{\PYGZlt{}=} \PYG{k}{NOT} \PYG{n}{K}\PYG{p}{;}
+\PYG{k}{end} \PYG{n+nc}{V1}\PYG{p}{;}
+
+\PYG{k}{architecture} \PYG{n+nc}{V2} \PYG{k}{of} \PYG{n+nc}{Q1} \PYG{k}{is}
+\PYG{k}{begin}
+  \PYG{n}{L} \PYG{o}{\PYGZlt{}=} \PYG{k}{NOT} \PYG{p}{(((}\PYG{k}{NOT} \PYG{n}{A}\PYG{p}{)} \PYG{k}{AND} \PYG{n}{C} \PYG{k}{AND} \PYG{n}{D}\PYG{p}{)} \PYG{k}{XOR} \PYG{p}{(}\PYG{k}{NOT}\PYG{p}{(}\PYG{n}{E} \PYG{k}{AND} \PYG{p}{(}\PYG{k}{NOT} \PYG{n}{F}\PYG{p}{))))));}
+\PYG{k}{end} \PYG{n+nc}{V2}\PYG{p}{;}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} end of VHDL code}
+\end{Verbatim}

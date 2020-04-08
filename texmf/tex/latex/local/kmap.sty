@@ -63,11 +63,12 @@
 \def\coordd(#1){node[circle, red, draw, inner sep=1pt,pin={[red, overlay, inner sep=0.5pt, font=\tiny, pin distance=0.1cm, pin edge={red, overlay,}]-45:#1}](#1){}}
 
 %Empty Karnaugh map 4x4
-\newenvironment{Karnaugh}%
+\newenvironment{Karnaugh}[2]%
 {
 \begin{tikzpicture}[baseline=(current bounding box.north),scale=0.8]
 \draw (0,0) grid (4,4);
-\draw (0,4) -- node [pos=0.8,above right,anchor=south west] {\footnotesize CD} node [pos=0.8,below left,anchor=north east] {\footnotesize AB} ++(135:1);
+\draw (0,4) -- node [pos=0.8,above right,anchor=south west] {\footnotesize #2} node [pos=0.8,below left,anchor=north east] {\footnotesize #1} ++(135:1);
+
 %
 \matrix (mapa) [matrix of nodes,
         column sep={0.8cm,between origins},
@@ -89,11 +90,11 @@
 }
 
 %Empty Karnaugh map 2x4
-\newenvironment{Karnaugh24}%
+\newenvironment{Karnaugh24}[2]%
 {
 \begin{tikzpicture}[baseline=(current bounding box.north),scale=0.8]
 \draw (0,0) grid (4,2);
-\draw (0,2) -- node [pos=0.8,above right,anchor=south west] {\footnotesize BC} node [pos=0.8,below left,anchor=north east] {\footnotesize A} ++(135:1);
+\draw (0,2) -- node [pos=0.8,above right,anchor=south west] {\footnotesize #2} node [pos=0.8,below left,anchor=north east] {\footnotesize #1} ++(135:1);
 %
 \matrix (mapa) [matrix of nodes,
         column sep={0.8cm,between origins},
