@@ -1,0 +1,18 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+--------------------------------------------------------------------------------
+-- Inverter gate with 4ns propagation delay
+--------------------------------------------------------------------------------
+
+entity inv is
+	port (
+		A : in std_logic;
+		Y : out std_logic
+		);
+end entity inv;
+
+architecture df of inv is
+begin
+	Y <= NOT A after 4ns;
+end architecture ; -- df

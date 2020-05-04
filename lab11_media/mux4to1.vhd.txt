@@ -1,0 +1,64 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+--------------------------------------------------------------------------------
+-- 4-input AND gate with 7ns propagation delay
+--------------------------------------------------------------------------------
+
+entity mux4to1 is
+	port (
+		A, B, G : in std_logic;
+		C       : in std_logic_vector;
+		Y       : out std_logic
+		);
+end entity mux4to1;
+
+architecture struct of mux4to1 is
+	component inv is
+		port (
+			A : in std_logic;
+			Y : out std_logic
+		);
+	end component inv;
+
+	component and4 is
+		port (
+			A, B, C, D  : in std_logic;
+			Y           : out std_logic
+		);
+	end component and4;
+
+	component or4 is
+		port (
+			A, B, C, D : in std_logic;
+			Y          : out std_logic
+		);
+	end component or4;
+	
+	signal n_A, n_B, n_G : std_logic := '0';
+	signal s_0, s_1, s_2, s_3 : std_logic := '0';
+begin
+	-- First step will map all of the inverted inputs to use later
+	inv_A : inv port map (A => A, Y => n_A);
+	inv_B : inv port map (A => B, Y => n_B);
+	inv_G : inv port map (A => G, Y => n_G);
+
+	-- Second we will use the 4-input and gates for each vector input
+	-- Use n_G because the enables are active low
+	-- Gates are named and_[MUX_N]_[SEL_N]
+	and_0 : and4 port map (A => n_G, B => n_B, C => n_A, D => C(0), Y => s_0); -- "00"
+	and_1 : and4 port map (A => n_G, B => n_B, C => A,   D => C(1), Y => s_1); -- "01"
+	and_2 : and4 port map (A => n_G, B => B,   C => n_A, D => C(2), Y => s_2); -- "10"
+	and_3 : and4 port map (A => n_G, B => B,   C => A,   D => C(3), Y => s_3); -- "11"
+
+
+	-- Third we will OR together the output from the last step
+	or_gate : or4 port map (
+		A => s_0,
+		B => s_1,
+		C => s_2,
+		D => s_3,
+
+		Y => Y
+		);
+end architecture ; -- df

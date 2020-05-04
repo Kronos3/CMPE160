@@ -1,0 +1,69 @@
+\documentclass[twoside,11pt]{article}
+%%%%% PACKAGES %%%%%%
+\usepackage[english]{babel}
+\usepackage{color}
+\usepackage[margin=1in]{geometry}
+\usepackage{minted}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{shapes,arrows,calc,arrows.meta}
+\usepackage{circuitikz}
+\usetikzlibrary{circuits.logic.IEC,calc}
+
+\newcommand\assignmentNumber{10}
+\newcommand\studentName{Andrei Tumbar}
+
+\begin{document}
+
+\title{\vspace{-3cm}Homework \assignmentNumber\\\studentName\vspace{-2cm}}
+\maketitle
+\vspace{-5cm}
+
+\section{Write VHDL code (dataflow) to describe the circuit in two ways.}
+\label{sec:background}
+
+
+\begin{minted}{vhdl}
+library IEEE;use IEEE.STD_LOGIC_1164.ALL;entity hw11_p1 is    Port ( signal A, _______________, C : in  STD_LOGIC;             signal _______________, _______________, _______________, in4, in3, in2, in1, in0  : in  STD_LOGIC;             signal mux_out : out STD_LOGIC);end hw11_p1; architecture behavioral of hw11_p1 is  begin  process (A, B, C, in7, _______________, _______________, _______________, in3, in2, in1, in0) is begin    case std_logic_vector'(A,B,C) is  when "000" => mux_out <= in0;  when "001" => mux_out <= _______________;  when "010" => mux_out <= _______________;  when "011" => mux_out <= in3;  when "100" => mux_out <= _______________;  when "101" => mux_out <= in5;  when "110" => mux_out <= _______________;  when others => mux_out <= in7; -- "111"end case;  end process;end behavioral
+
+\end{minted}
+\pagebreak
+
+\section{Design a multiplexor circuit to describe the VHDL code.}
+
+\begin{figure}[h!]
+	\begin{center}
+		\begin{tikzpicture}
+		\draw (0,0)coordinate (O)--++(30:1)coordinate (A)--++(90:2)coordinate (B)--++(150:1)coordinate (C)--cycle;
+		\draw ($(A)!0.5!(B)$)--++(0:1)node[right]{$Y$};
+		\draw ($(O)!0.33!(A)$)--++(-90:1)--++(180:2)node[left]{$S_1$};
+		\draw ($(O)!0.66!(A)$)--++(-90:1.75)--++(180:2.25)node[left]{$S_0$};
+		\foreach \y/\t in {0.0/0,0.1/1,0.2/2,0.3/3} {
+		\draw ($(C)! \y*2.2 + 0.2 !(O)$)--++(180:1) node[left] {$I \t$};}
+		\end{tikzpicture}
+	\end{center}
+\end{figure}
+
+\section{Design a 3:8 decoder circuit to describe the VHDL code.}
+
+\begin{figure}[h!]
+	\begin{center}
+		\begin{circuitikz}[circuit logic IEC]
+		\node[and gate,inputs={nnn},and gate IEC symbol={Decoder 3:8},text height=6cm,text width=3cm,
+		 ] (A) {};
+
+		\foreach \V/\X in {1/A,2/B,3/C} 
+		{
+		  \draw  ([xshift=-10pt]A.input \V) node[left] {$\X$} -- (A.input  \V);
+		}
+
+		\foreach \C/\B/\D in {0.111/111/7,.222/110/6,.333/101/5,.444/100/4,.555/011/3,.666/010/2,.777/001/1,.888/000/0} 
+		{
+		  \draw ( $ (A.south east)!\C!(A.north east) $ ) -- ++(10pt,0) node[left,xshift=-10] {$\B$} -- ++(20pt,0) node[left,xshift=20] {$Y_\D$};
+		}
+
+		\end{circuitikz}
+	\end{center}
+\end{figure}
+
+\end{document}

@@ -1,0 +1,197 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+-- Use integer for indexing
+USE ieee.numeric_std.all;
+
+entity tb is
+end entity tb;
+
+architecture behaviour of tb is
+	component DM74LS153 is
+		port (
+			G1, G2       : in std_logic; -- Enable for each mux (Active LOW)
+			A,  B        : in std_logic; -- Select lines for both mux
+			C1, C2       : in std_logic_vector(3 downto 0); -- 4-bit input vector
+			Y1, Y2       : out std_logic -- Output for each mux
+		);
+	end component DM74LS153;
+
+	signal sA, sB : std_logic;             -- Input select lines
+	
+	-- Input vectors of first stimulus
+	signal sC1_1: std_logic_vector(3 downto 0);
+	signal sC2_1: std_logic_vector(3 downto 0);
+
+	-- Input vectors of second stimulus
+	signal sC1_2: std_logic_vector(3 downto 0);
+	signal sC2_2: std_logic_vector(3 downto 0);
+	
+	-- Outputs of first stimulus set
+	-- Don't init these immediatly
+	signal sY1_1, sY2_1 : std_logic; -- Output test signals from dataflow
+	signal sY1_2, sY2_2 : std_logic; -- Output test signals from behavioral
+	signal sY1_3, sY2_3 : std_logic; -- Output test signals from structural
+
+	-- Outputs of second stimulus set
+	signal sY1_4, sY2_4 : std_logic; -- Output test signals from dataflow
+	signal sY1_5, sY2_5 : std_logic; -- Output test signals from behavioral
+	signal sY1_6, sY2_6 : std_logic; -- Output test signals from structural
+
+	-- Outputs of third stimulus set
+	signal sY1_7, sY2_7 : std_logic; -- Output test signals from dataflow
+	signal sY1_8, sY2_8 : std_logic; -- Output test signals from behavioral
+	signal sY1_9, sY2_9 : std_logic; -- Output test signals from structural
+	
+	signal sG1, sG2 : std_logic := '0';     -- The internal enable signals (always grounded)
+
+	-- A two bit counter to counter to set to the selects every 100 ns
+	--   Need this instead of directly setting sA and sB because 
+	--   (sB,sA) starts at "00" would not trigger the behavioral process initially
+	signal counter : std_logic_vector(1 downto 0) := "00";
+
+	for UUT1 : DM74LS153 use entity work.DM74LS153(df);
+	for UUT2 : DM74LS153 use entity work.DM74LS153(behv);
+	for UUT3 : DM74LS153 use entity work.DM74LS153(struct);
+
+	for UUT4 : DM74LS153 use entity work.DM74LS153(df);
+	for UUT5 : DM74LS153 use entity work.DM74LS153(behv);
+	for UUT6 : DM74LS153 use entity work.DM74LS153(struct);
+
+begin
+	UUT1: DM74LS153 port map (
+			G1 => sG1, G2 => sG2,
+			A  => sA,  B  => sB,
+			C1 => sC1_1, C2 => sC2_1,
+			Y1 => sY1_1, Y2 => sY2_1
+		);
+
+	UUT2: DM74LS153 port map (
+			G1 => sG1, G2 => sG2,
+			A  => sA,  B  => sB,
+			C1 => sC1_1, C2 => sC2_1,
+			Y1 => sY1_2, Y2 => sY2_2
+		);
+
+	UUT3: DM74LS153 port map (
+			G1 => sG1, G2 => sG2,
+			A  => sA,  B  => sB,
+			C1 => sC1_1, C2 => sC2_1,
+			Y1 => sY1_3, Y2 => sY2_3
+		);
+
+	UUT4: DM74LS153 port map (
+			G1 => sG1, G2 => sG2,
+			A  => sA,  B  => sB,
+			C1 => sC1_2, C2 => sC2_2,
+			Y1 => sY1_4, Y2 => sY2_4
+		);
+
+	UUT5: DM74LS153 port map (
+			G1 => sG1, G2 => sG2,
+			A  => sA,  B  => sB,
+			C1 => sC1_2, C2 => sC2_2,
+			Y1 => sY1_5, Y2 => sY2_5
+		);
+
+	UUT6: DM74LS153 port map (
+			G1 => sG1, G2 => sG2,
+			A  => sA,  B  => sB,
+			C1 => sC1_2, C2 => sC2_2,
+			Y1 => sY1_6, Y2 => sY2_6
+		);
+
+	UUT7: DM74LS153 port map (
+			G1 => '1', G2 => '1',
+			A  => sA,  B  => sB,
+			C1 => sC1_2, C2 => sC2_2,
+			Y1 => sY1_7, Y2 => sY2_7
+		);
+
+	UUT8: DM74LS153 port map (
+			G1 => '1', G2 => '1',
+			A  => sA,  B  => sB,
+			C1 => sC1_2, C2 => sC2_2,
+			Y1 => sY1_8, Y2 => sY2_8
+		);
+
+	UUT9: DM74LS153 port map (
+			G1 => '1', G2 => '1',
+			A  => sA,  B  => sB,
+			C1 => sC1_2, C2 => sC2_2,
+			Y1 => sY1_9, Y2 => sY2_9
+		);
+
+
+	(sB, sA) <= counter;
+
+	process is begin
+		wait for 100 ns;
+		counter <= counter + "01";
+	end process;
+
+	-- Stimulus process for Test set 1
+	-- Start with C1 = "1110" and C2 = "0001"
+	-- Every cycle perform a left circular bitshift
+
+	-- Each buffer will swap which input vector it is pointing to
+	-- This allows more change combinations
+	test_set_one : process is
+		variable buff1: std_logic_vector (3 downto 0):= "1110";
+		variable buff2: std_logic_vector (3 downto 0):= "0001";
+		variable c1_is_2 : std_logic := '0'; -- Keep track of which buffer is where
+		                                     -- '0' : c1 is looking at buff1
+		                                     -- '1' : c1 is looking at buff2
+	begin
+		-- Set the input vectors to the correct buffers
+		if (c1_is_2 = '0') then
+			sC1_1 <= buff1;
+			sC2_1 <= buff2;
+		else
+			sC1_1 <= buff2;
+			sC2_1 <= buff1;
+		end if;
+
+		-- Perform a left circular bitshift
+		buff1 := buff1(2 downto 0) & buff1(3);
+		buff2 := buff2(2 downto 0) & buff2(3);
+
+		-- Make sure the buffers are swapped next cycle
+		c1_is_2 := not c1_is_2;
+		wait for 50 ns;
+	end process test_set_one;
+
+	-- Stimulus process for Test set 2
+	-- Iterate through entire counter with the following unchanging inputs
+	-- C1 = "1010"
+	-- C2 = "0101"
+	test_set_two : process is
+	begin
+		sC1_2 <= "1010";
+		sC2_2 <= "0101";
+
+		wait;
+	end process test_set_two;
+
+	process
+		variable i : integer;
+	begin
+		wait on sA, sB;
+		-- Get the index to check for
+		i := to_integer(unsigned(std_logic_vector'(sB,sA)));
+		wait for 24 ns; -- Wait long enough for the longest propagation delay
+
+		assert (sY1_1 = sC1_1(i) and sY2_1 = sC2_1(i))
+		report "wrong output for df architecture at time: " & time'image(now)
+		severity warning;
+
+		assert (sY1_2 = sC1_1(i) and sY2_2 = sC2_1(i))
+		report "wrong output for behv architecture at time: " & time'image(now)
+		severity warning;
+
+		assert (sY1_3 = sC1_1(i) and sY2_3 = sC2_1(i))
+		report "wrong output for struct architecture at time: " & time'image(now)
+		severity warning;
+	end process;
+end architecture behaviour;

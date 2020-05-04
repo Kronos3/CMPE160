@@ -1,0 +1,81 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity DM74LS153 is
+	port (
+		G1, G2		 : in std_logic; -- Enable for each mux (Active LOW)
+		A, B 		 : in std_logic; -- Select lines for both mux
+		C1, C2           : in std_logic_vector(3 downto 0); -- 4-bit input vector
+		Y1, Y2    	 : out std_logic -- Output for each mux
+		);
+end entity DM74LS153;
+
+architecture df of DM74LS153 is begin
+	-- model for the first multiplexor
+	with std_logic_vector'(G1,B,A) select Y1 <=
+		C1(0) when "000",
+		C1(1) when "001",
+		C1(2) when "010",
+		C1(3) when "011",
+		'0'   when others; -- Enable is active LOW
+
+	-- model for the second multiplexor
+	with std_logic_vector'(G2,B,A) select Y2 <=
+		C2(0) when "000",
+		C2(1) when "001",
+		C2(2) when "010",
+		C2(3) when "011",
+		'0'   when others; -- Enable is active LOW
+
+end architecture df;
+
+architecture behv of DM74LS153 is begin
+	process (G1,B,A,C1) is begin
+		-- Every output has a worse case propagation delay of 22ns
+		case std_logic_vector'(G1,B,A) is
+			when "000"  => Y1 <= C1(0) after 22 ns;
+			when "001"  => Y1 <= C1(1) after 22 ns;
+			when "010"  => Y1 <= C1(2) after 22 ns;
+			when "011"  => Y1 <= C1(3) after 22 ns;
+			when others => Y1 <= '0'   after 22 ns; -- '0' when enable is HIGH
+		end case;
+	end process; 
+
+	process (G2,B,A,C2) is begin
+		-- Every output has a worse case propagation delay of 22ns
+		case std_logic_vector'(G2,B,A) is
+			when "000"  => Y2 <= C2(0) after 22 ns;
+			when "001"  => Y2 <= C2(1) after 22 ns;
+			when "010"  => Y2 <= C2(2) after 22 ns;
+			when "011"  => Y2 <= C2(3) after 22 ns;
+			when others => Y2 <= '0'   after 22 ns; -- '0' when enable is HIGH
+		end case;
+	end process;
+end architecture behv;
+
+architecture struct of DM74LS153 is
+	component mux4to1 is
+		port (
+		       A, B, G : in std_logic;
+		       C       : in std_logic_vector;
+		       Y       : out std_logic
+		);
+	end component mux4to1;
+begin
+	-- Init two muxes and map them
+	mux1 : mux4to1 port map (
+		A => A,
+		B => B,
+		G => G1,
+		C => C1,
+		Y => Y1
+		);
+
+	mux2 : mux4to1 port map (
+		A => A,
+		B => B,
+		G => G2,
+		C => C2,
+		Y => Y2
+		);
+end architecture struct;
